@@ -1,0 +1,179 @@
+apiVersion: tekton.dev/v1
+kind: PipelineRun
+metadata:
+  annotations:
+    chains.tekton.dev/signed: "true"
+  creationTimestamp: "2023-10-17T16:10:44Z"
+  finalizers:
+  - chains.tekton.dev/pipelinerun
+  generation: 1
+  labels:
+    tekton.dev/pipeline: simple-build
+  name: simple-build-run-e09d60fe56
+  namespace: default
+  resourceVersion: "2144"
+  uid: 61302bbc-e8c6-4059-9692-92036c9c0691
+spec:
+  params:
+  - name: IMAGE_DIGEST
+    value: sha256:f6135ba64031dff85c0a9771776ad03135fecad75f572cb13917bd139f8c377c
+  - name: IMAGE_URL
+    value: quay.io/lucarval/test-policies-chains
+  - name: TEST_OUTPUT
+    value: missing
+  - name: commit
+    value: f6aec6868913800133e2c61fb3183286ffd1551a
+  - name: committer-date
+    value: "1697559044"
+  - name: url
+    value: gitspam.spam/spam/spam
+  pipelineRef:
+    name: simple-build
+  taskRunTemplate:
+    serviceAccountName: default
+  timeouts:
+    pipeline: 1h0m0s
+status:
+  childReferences:
+  - apiVersion: tekton.dev/v1
+    kind: TaskRun
+    name: simple-build-run-e09d60fe56-git-clone
+    pipelineTaskName: git-clone
+  - apiVersion: tekton.dev/v1
+    kind: TaskRun
+    name: simple-build-run-e09d60fe56-scan
+    pipelineTaskName: scan
+  - apiVersion: tekton.dev/v1
+    kind: TaskRun
+    name: simple-build-run-e09d60fe56-build
+    pipelineTaskName: build
+  completionTime: "2023-10-17T16:10:57Z"
+  conditions:
+  - lastTransitionTime: "2023-10-17T16:10:57Z"
+    message: 'Tasks Completed: 3 (Failed: 0, Cancelled 0), Skipped: 0'
+    reason: Succeeded
+    status: "True"
+    type: Succeeded
+  pipelineSpec:
+    params:
+    - name: commit
+      type: string
+    - name: url
+      type: string
+    - name: committer-date
+      type: string
+    - name: IMAGE_URL
+      type: string
+    - name: IMAGE_DIGEST
+      type: string
+    - name: TEST_OUTPUT
+      type: string
+    results:
+    - description: ""
+      name: IMAGE_URL
+      value: $(tasks.build.results.IMAGE_URL)
+    - description: ""
+      name: IMAGE_DIGEST
+      value: $(tasks.build.results.IMAGE_DIGEST)
+    - description: ""
+      name: CHAINS-GIT_URL
+      value: $(tasks.git-clone.results.url)
+    - description: ""
+      name: CHAINS-GIT_COMMIT
+      value: $(tasks.git-clone.results.commit)
+    tasks:
+    - name: git-clone
+      params:
+      - name: commit
+        value: f6aec6868913800133e2c61fb3183286ffd1551a
+      - name: url
+        value: gitspam.spam/spam/spam
+      - name: committer-date
+        value: "1697559044"
+      taskRef:
+        kind: Task
+        params:
+        - name: url
+          value: https://github.com/lcarva/ec-policies.git
+        - name: revision
+          value: 727f8cae69fdfbae7cf8a44fd5e2055ad9573fb9
+        - name: pathInRepo
+          value: integration/task/mock-git-clone.yaml
+        resolver: git
+    - name: scan
+      params:
+      - name: TEST_OUTPUT
+        value: missing
+      runAfter:
+      - git-clone
+      taskSpec:
+        description: This is a dummy task that emulates a task that scans source code.
+          Its sole purpose is to facilitate testing.
+        metadata: {}
+        params:
+        - description: The value to of the TEST_OUTPUT commit result.
+          name: TEST_OUTPUT
+          type: string
+        results:
+        - description: The summary scanner output.
+          name: TEST_OUTPUT
+          type: string
+        spec: null
+        steps:
+        - computeResources: {}
+          env:
+          - name: TEST_OUTPUT
+            value: missing
+          image: registry.access.redhat.com/ubi9:latest
+          name: scan
+          script: |
+            #!/usr/bin/env sh
+            set -euo pipefail
+
+            echo -n "${TEST_OUTPUT}" > "$(results.TEST_OUTPUT.path)"
+    - name: build
+      params:
+      - name: IMAGE_URL
+        value: quay.io/lucarval/test-policies-chains
+      - name: IMAGE_DIGEST
+        value: sha256:f6135ba64031dff85c0a9771776ad03135fecad75f572cb13917bd139f8c377c
+      runAfter:
+      - scan
+      taskRef:
+        kind: Task
+        params:
+        - name: bundle
+          value: quay.io/lucarval/test-policies-chains@sha256:c6ea74a4f8003179532dc2d74a51ef170be078acd4821fba15856d83eaa2d67a
+        - name: name
+          value: mock-build
+        - name: kind
+          value: task
+        resolver: bundles
+  provenance:
+    featureFlags:
+      AwaitSidecarReadiness: true
+      Coschedule: workspaces
+      DisableAffinityAssistant: false
+      DisableCredsInit: false
+      EnableAPIFields: beta
+      EnableProvenanceInStatus: true
+      EnableTektonOCIBundles: false
+      EnforceNonfalsifiability: none
+      MaxResultSize: 4096
+      RequireGitSSHSecretKnownHosts: false
+      ResultExtractionMethod: termination-message
+      RunningInEnvWithInjectedSidecars: true
+      ScopeWhenExpressionsToTask: false
+      SendCloudEventsForRuns: false
+      SetSecurityContext: false
+      VerificationNoMatchPolicy: ignore
+  results:
+  - name: IMAGE_URL
+    value: quay.io/lucarval/test-policies-chains
+  - name: IMAGE_DIGEST
+    value: sha256:f6135ba64031dff85c0a9771776ad03135fecad75f572cb13917bd139f8c377c
+  - name: CHAINS-GIT_URL
+    value: gitspam.spam/spam/spam
+  - name: CHAINS-GIT_COMMIT
+    value: f6aec6868913800133e2c61fb3183286ffd1551a
+  startTime: "2023-10-17T16:10:44Z"
