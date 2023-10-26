@@ -38,7 +38,7 @@
 #   kubectl patch serviceaccount default -p '{"secrets": [{"name": "'$USER'"}]}'
 #
 #
-# Usage: ./integration/record.sh
+# Usage: ./provenance/record.sh
 #   The environment variable IMAGE_URL must point to an OCI repository, e.g. quay.io/lucarval/spam
 #   You must have write access to the repository.
 #
@@ -94,7 +94,7 @@ function render_pipeline() {
   local pipeline
 
   bundle_ref="$(
-      tkn bundle push "${IMAGE_URL}:buildah-task" -f integration/task/mock-build.yaml |
+      tkn bundle push "${IMAGE_URL}:buildah-task" -f provenance/task/mock-build.yaml |
       grep 'Pushed' | rev | cut -d' ' -f 1 | rev)"
 
   log "Pushed Tekton bundle image ${bundle_ref}"
@@ -109,7 +109,7 @@ function render_pipeline() {
   export git_url
   export git_rev
 
-  pipeline="$(< integration/pipeline/simple-build.yaml yq '
+  pipeline="$(< provenance/pipeline/simple-build.yaml yq '
     (.spec.tasks[] | select(.name == "build") | .taskRef.params[] | select(.name == "bundle")) .value |= strenv(bundle_ref) |
     (.spec.tasks[] | select(.name == "git-clone") | .taskRef.params[] | select(.name == "url")) .value |= strenv(git_url) |
     (.spec.tasks[] | select(.name == "git-clone") | .taskRef.params[] | select(.name == "revision")) .value |= strenv(git_rev)
@@ -218,7 +218,7 @@ function setup_scenario() {
   name="$1"
   log "🏃 Executing scenario ${name}"
 
-  output_dir="integration/recordings/${name}"
+  output_dir="provenance/recordings/${name}"
   mkdir -p "${output_dir}"
 
   echo -n "${output_dir}"
