@@ -1,0 +1,139 @@
+{
+  "_type": "https://in-toto.io/Statement/v0.1",
+  "predicateType": "https://slsa.dev/provenance/v1",
+  "subject": [
+    {
+      "name": "quay.io/lucarval/test-policies-chains",
+      "digest": {
+        "sha256": "617723502cc79e286b13e2419334f2a6f64c1f46575d3de7e9df2e65a872fd9f"
+      }
+    }
+  ],
+  "predicate": {
+    "buildDefinition": {
+      "buildType": "https://tekton.dev/chains/v2/slsa",
+      "externalParameters": {
+        "runSpec": {
+          "pipelineRef": {
+            "name": "simple-build"
+          },
+          "params": [
+            {
+              "name": "IMAGE_DIGEST",
+              "value": "sha256:617723502cc79e286b13e2419334f2a6f64c1f46575d3de7e9df2e65a872fd9f"
+            },
+            {
+              "name": "IMAGE_URL",
+              "value": "quay.io/lucarval/test-policies-chains"
+            },
+            {
+              "name": "TEST_OUTPUT",
+              "value": "missing"
+            },
+            {
+              "name": "commit",
+              "value": "24d88836110dca40cce6a3ac16e3e682c2a331b3"
+            },
+            {
+              "name": "committer-date",
+              "value": "1697558986"
+            },
+            {
+              "name": "url",
+              "value": "gitspam.spam/spam/spam"
+            }
+          ],
+          "serviceAccountName": "default",
+          "timeouts": {
+            "pipeline": "1h0m0s"
+          }
+        }
+      },
+      "internalParameters": {
+        "tekton-pipelines-feature-flags": {
+          "DisableAffinityAssistant": false,
+          "DisableCredsInit": false,
+          "RunningInEnvWithInjectedSidecars": true,
+          "RequireGitSSHSecretKnownHosts": false,
+          "EnableTektonOCIBundles": false,
+          "ScopeWhenExpressionsToTask": false,
+          "EnableAPIFields": "beta",
+          "SendCloudEventsForRuns": false,
+          "AwaitSidecarReadiness": true,
+          "EnforceNonfalsifiability": "none",
+          "VerificationNoMatchPolicy": "ignore",
+          "EnableProvenanceInStatus": true,
+          "ResultExtractionMethod": "termination-message",
+          "MaxResultSize": 4096,
+          "SetSecurityContext": false,
+          "Coschedule": "workspaces"
+        }
+      },
+      "resolvedDependencies": [
+        {
+          "uri": "git+https://github.com/lcarva/ec-policies.git",
+          "digest": {
+            "sha1": "727f8cae69fdfbae7cf8a44fd5e2055ad9573fb9"
+          },
+          "name": "pipelineTask"
+        },
+        {
+          "uri": "oci://registry.access.redhat.com/ubi9",
+          "digest": {
+            "sha256": "20f695d2a91352d4eaa25107535126727b5945bff38ed36a3e59590f495046f0"
+          }
+        },
+        {
+          "uri": "quay.io/lucarval/test-policies-chains",
+          "digest": {
+            "sha256": "a26916e6abb8c89127b13c58674447a8e49ef5c573434106cd97033dc164ec09"
+          },
+          "name": "pipelineTask"
+        },
+        {
+          "uri": "git+gitspam.spam/spam/spam.git",
+          "digest": {
+            "sha1": "24d88836110dca40cce6a3ac16e3e682c2a331b3"
+          },
+          "name": "inputs/result"
+        }
+      ]
+    },
+    "runDetails": {
+      "builder": {
+        "id": "https://tekton.dev/chains/v2"
+      },
+      "metadata": {
+        "invocationID": "75531c64-3775-4fbe-a5dd-25d5eda0d60f",
+        "startedOn": "2023-10-17T16:09:46Z",
+        "finishedOn": "2023-10-17T16:09:59Z"
+      },
+      "byproducts": [
+        {
+          "name": "pipelineRunResults/IMAGE_URL",
+          "mediaType": "application/json",
+          "content": "InF1YXkuaW8vbHVjYXJ2YWwvdGVzdC1wb2xpY2llcy1jaGFpbnMi",
+          "__decodedContent": "quay.io/lucarval/test-policies-chains"
+        },
+        {
+          "name": "pipelineRunResults/IMAGE_DIGEST",
+          "mediaType": "application/json",
+          "content": "InNoYTI1Njo2MTc3MjM1MDJjYzc5ZTI4NmIxM2UyNDE5MzM0ZjJhNmY2NGMxZjQ2NTc1ZDNkZTdlOWRmMmU2NWE4NzJmZDlmIg==",
+          "__decodedContent": "sha256:617723502cc79e286b13e2419334f2a6f64c1f46575d3de7e9df2e65a872fd9f"
+        },
+        {
+          "name": "pipelineRunResults/CHAINS-GIT_URL",
+          "mediaType": "application/json",
+          "content": "ImdpdHNwYW0uc3BhbS9zcGFtL3NwYW0i",
+          "__decodedContent": "gitspam.spam/spam/spam"
+        },
+        {
+          "name": "pipelineRunResults/CHAINS-GIT_COMMIT",
+          "mediaType": "application/json",
+          "content": "IjI0ZDg4ODM2MTEwZGNhNDBjY2U2YTNhYzE2ZTNlNjgyYzJhMzMxYjMi",
+          "__decodedContent": "24d88836110dca40cce6a3ac16e3e682c2a331b3"
+        }
+      ]
+    }
+  }
+}
