@@ -188,6 +188,29 @@ function download_attestation() {
     | jq '.payload | @base64d | fromjson'
 }
 
+function decode_attestation_content() {
+  local att_file
+  local decoded_content_att_file
+  local jq_query
+
+  att_file="$1"
+  decoded_content_att_file="$2"
+  jq_query='
+    walk(
+      if type == "object" and .content? then
+        .__decodedContent = (.content | @base64d | fromjson)
+      else
+        .
+      end
+    )
+  '
+
+  jq "$jq_query" "$att_file" > "$decoded_content_att_file"
+
+  # If there were no changes then the file is useless so let's remove it
+  diff "$att_file" "$decoded_content_att_file" >/dev/null && rm -f "$decoded_content_att_file"
+}
+
 function setup_scenario() {
   local name
   local output_dir
@@ -223,6 +246,8 @@ function run_in_cluster_pipeline() {
   kubectl get pipelinerun "${pr_name}" -o yaml > "${output_dir}/pipelinerun.yaml"
 
   download_attestation "${image_digest}" > "${output_dir}/attestation.json"
+
+  decode_attestation_content "${output_dir}/attestation.json" "${output_dir}/decoded-content-att.json"
 }
 
 function run_inline_pipeline() {
@@ -248,6 +273,8 @@ function run_inline_pipeline() {
   kubectl get pipelinerun "${pr_name}" -o yaml > "${output_dir}/pipelinerun.yaml"
 
   download_attestation "${image_digest}" > "${output_dir}/attestation.json"
+
+  decode_attestation_content "${output_dir}/attestation.json" "${output_dir}/decoded-content-att.json"
 }
 
 #########
