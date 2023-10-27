@@ -32,7 +32,7 @@ spec:
           - name: revision
             value: dynamically populated
           - name: pathInRepo
-            value: integration/task/mock-git-clone.yaml
+            value: provenance/task/mock-git-clone.yaml
 
     - name: scan
       runAfter:
