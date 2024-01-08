@@ -86,6 +86,11 @@ function build_image() {
     echo -n "${digest}"
 }
 
+function load_local_task() {
+  kubectl apply -f provenance/task/mock-av-scan.yaml
+  log "✅ Loaded local task onto cluster"
+}
+
 function render_pipeline() {
   local bundle_ref
   local git_remote
@@ -208,7 +213,9 @@ function decode_attestation_content() {
   jq "$jq_query" "$att_file" > "$decoded_content_att_file"
 
   # If there were no changes then the file is useless so let's remove it
+  set +e
   diff "$att_file" "$decoded_content_att_file" >/dev/null && rm -f "$decoded_content_att_file"
+  set -e
 }
 
 function setup_scenario() {
@@ -234,6 +241,8 @@ function run_in_cluster_pipeline() {
   render_pipeline | tee "${output_dir}/pipeline.yaml" | kubectl apply -f -
 
   image_digest="$(build_image)"
+
+  load_local_task
 
   pr_name="simple-build-run-$(rand_string)"
 
@@ -261,6 +270,8 @@ function run_inline_pipeline() {
   pipeline_spec="$(render_pipeline | yq '.spec' -o json | jq -c )"
 
   image_digest="$(build_image)"
+
+  load_local_task
 
   pr_name="simple-build-run-$(rand_string)"
 

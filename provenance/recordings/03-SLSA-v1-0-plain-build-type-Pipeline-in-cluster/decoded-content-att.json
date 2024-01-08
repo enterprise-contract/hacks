@@ -5,7 +5,7 @@
     {
       "name": "quay.io/lucarval/test-policies-chains",
       "digest": {
-        "sha256": "617723502cc79e286b13e2419334f2a6f64c1f46575d3de7e9df2e65a872fd9f"
+        "sha256": "95b29ef58e5e81ed2b97965d26916936fd60a46f91da1a58f404413a24f2fc5d"
       }
     }
   ],
@@ -20,7 +20,7 @@
           "params": [
             {
               "name": "IMAGE_DIGEST",
-              "value": "sha256:617723502cc79e286b13e2419334f2a6f64c1f46575d3de7e9df2e65a872fd9f"
+              "value": "sha256:95b29ef58e5e81ed2b97965d26916936fd60a46f91da1a58f404413a24f2fc5d"
             },
             {
               "name": "IMAGE_URL",
@@ -32,11 +32,11 @@
             },
             {
               "name": "commit",
-              "value": "24d88836110dca40cce6a3ac16e3e682c2a331b3"
+              "value": "f41719bc200dcd0f0f3c8bcb66d23ff56b3875de"
             },
             {
               "name": "committer-date",
-              "value": "1697558986"
+              "value": "1704741428"
             },
             {
               "name": "url",
@@ -55,9 +55,9 @@
           "DisableCredsInit": false,
           "RunningInEnvWithInjectedSidecars": true,
           "RequireGitSSHSecretKnownHosts": false,
-          "EnableTektonOCIBundles": false,
+          "EnableTektonOCIBundles": true,
           "ScopeWhenExpressionsToTask": false,
-          "EnableAPIFields": "beta",
+          "EnableAPIFields": "alpha",
           "SendCloudEventsForRuns": false,
           "AwaitSidecarReadiness": true,
           "EnforceNonfalsifiability": "none",
@@ -71,29 +71,29 @@
       },
       "resolvedDependencies": [
         {
-          "uri": "git+https://github.com/lcarva/ec-policies.git",
+          "uri": "git+https://github.com/enterprise-contract/hacks.git",
           "digest": {
-            "sha1": "727f8cae69fdfbae7cf8a44fd5e2055ad9573fb9"
+            "sha1": "4fceb2416020011e794105f113a3913ef659c8ee"
           },
           "name": "pipelineTask"
         },
         {
           "uri": "oci://registry.access.redhat.com/ubi9",
           "digest": {
-            "sha256": "20f695d2a91352d4eaa25107535126727b5945bff38ed36a3e59590f495046f0"
+            "sha256": "fc300be6adbdf2ca812ad01efd0dee2a3e3f5d33958ad6cd99159e25e9ee1398"
           }
         },
         {
           "uri": "quay.io/lucarval/test-policies-chains",
           "digest": {
-            "sha256": "a26916e6abb8c89127b13c58674447a8e49ef5c573434106cd97033dc164ec09"
+            "sha256": "fa857eafc053a12bba737d0600c6bcc8f84d4f07eff56ec581e7d64f2c90ec60"
           },
           "name": "pipelineTask"
         },
         {
           "uri": "git+gitspam.spam/spam/spam.git",
           "digest": {
-            "sha1": "24d88836110dca40cce6a3ac16e3e682c2a331b3"
+            "sha1": "f41719bc200dcd0f0f3c8bcb66d23ff56b3875de"
           },
           "name": "inputs/result"
         }
@@ -104,9 +104,9 @@
         "id": "https://tekton.dev/chains/v2"
       },
       "metadata": {
-        "invocationID": "75531c64-3775-4fbe-a5dd-25d5eda0d60f",
-        "startedOn": "2023-10-17T16:09:46Z",
-        "finishedOn": "2023-10-17T16:09:59Z"
+        "invocationID": "166cc447-b1c4-4615-88a8-7e20992e3763",
+        "startedOn": "2024-01-08T19:17:09Z",
+        "finishedOn": "2024-01-08T19:17:23Z"
       },
       "byproducts": [
         {
@@ -118,8 +118,8 @@
         {
           "name": "pipelineRunResults/IMAGE_DIGEST",
           "mediaType": "application/json",
-          "content": "InNoYTI1Njo2MTc3MjM1MDJjYzc5ZTI4NmIxM2UyNDE5MzM0ZjJhNmY2NGMxZjQ2NTc1ZDNkZTdlOWRmMmU2NWE4NzJmZDlmIg==",
-          "__decodedContent": "sha256:617723502cc79e286b13e2419334f2a6f64c1f46575d3de7e9df2e65a872fd9f"
+          "content": "InNoYTI1Njo5NWIyOWVmNThlNWU4MWVkMmI5Nzk2NWQyNjkxNjkzNmZkNjBhNDZmOTFkYTFhNThmNDA0NDEzYTI0ZjJmYzVkIg==",
+          "__decodedContent": "sha256:95b29ef58e5e81ed2b97965d26916936fd60a46f91da1a58f404413a24f2fc5d"
         },
         {
           "name": "pipelineRunResults/CHAINS-GIT_URL",
@@ -130,8 +130,8 @@
         {
           "name": "pipelineRunResults/CHAINS-GIT_COMMIT",
           "mediaType": "application/json",
-          "content": "IjI0ZDg4ODM2MTEwZGNhNDBjY2U2YTNhYzE2ZTNlNjgyYzJhMzMxYjMi",
-          "__decodedContent": "24d88836110dca40cce6a3ac16e3e682c2a331b3"
+          "content": "ImY0MTcxOWJjMjAwZGNkMGYwZjNjOGJjYjY2ZDIzZmY1NmIzODc1ZGUi",
+          "__decodedContent": "f41719bc200dcd0f0f3c8bcb66d23ff56b3875de"
         }
       ]
     }

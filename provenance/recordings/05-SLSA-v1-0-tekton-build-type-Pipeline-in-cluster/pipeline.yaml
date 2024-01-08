@@ -27,11 +27,11 @@ spec:
         resolver: git
         params:
           - name: url
-            value: https://github.com/lcarva/ec-policies.git
+            value: https://github.com/enterprise-contract/hacks.git
           - name: revision
-            value: 727f8cae69fdfbae7cf8a44fd5e2055ad9573fb9
+            value: 4fceb2416020011e794105f113a3913ef659c8ee
           - name: pathInRepo
-            value: integration/task/mock-git-clone.yaml
+            value: provenance/task/mock-git-clone.yaml
     - name: scan
       runAfter:
         - git-clone
@@ -58,6 +58,14 @@ spec:
               set -euo pipefail
 
               echo -n "${TEST_OUTPUT}" > "$(results.TEST_OUTPUT.path)"
+    - name: av-scan
+      runAfter:
+        - git-clone
+      params:
+        - name: TEST_OUTPUT
+          value: $(params.TEST_OUTPUT)
+      taskRef:
+        name: mock-av-scanner
     - name: build
       runAfter:
         - scan
@@ -70,7 +78,7 @@ spec:
         resolver: bundles
         params:
           - name: bundle
-            value: quay.io/lucarval/test-policies-chains@sha256:c6ea74a4f8003179532dc2d74a51ef170be078acd4821fba15856d83eaa2d67a
+            value: quay.io/lucarval/test-policies-chains@sha256:b766741b8b3e135e4e31281aa4b25899e951798b5f213cc4a5360d01eb9b6880
           - name: name
             value: mock-build
           - name: kind
