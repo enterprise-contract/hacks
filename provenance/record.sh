@@ -86,6 +86,11 @@ function build_image() {
     echo -n "${digest}"
 }
 
+function load_local_task() {
+  kubectl apply -f provenance/task/mock-av-scan.yaml
+  log "✅ Loaded local task onto cluster"
+}
+
 function render_pipeline() {
   local bundle_ref
   local git_remote
@@ -237,6 +242,8 @@ function run_in_cluster_pipeline() {
 
   image_digest="$(build_image)"
 
+  load_local_task
+
   pr_name="simple-build-run-$(rand_string)"
 
   render_pipelinerun "${pr_name}" "${image_digest}" | \
@@ -263,6 +270,8 @@ function run_inline_pipeline() {
   pipeline_spec="$(render_pipeline | yq '.spec' -o json | jq -c )"
 
   image_digest="$(build_image)"
+
+  load_local_task
 
   pr_name="simple-build-run-$(rand_string)"
 

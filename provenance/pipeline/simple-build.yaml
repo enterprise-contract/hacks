@@ -62,6 +62,15 @@ spec:
 
               echo -n "${TEST_OUTPUT}" > "$(results.TEST_OUTPUT.path)"
 
+    - name: av-scan
+      runAfter:
+        - git-clone
+      params:
+        - name: TEST_OUTPUT
+          value: $(params.TEST_OUTPUT)
+      taskRef:
+        name: mock-av-scanner
+
     - name: build
       runAfter:
         - scan

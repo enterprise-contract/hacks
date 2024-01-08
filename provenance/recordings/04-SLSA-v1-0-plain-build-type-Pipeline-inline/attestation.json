@@ -5,7 +5,7 @@
     {
       "name": "quay.io/lucarval/test-policies-chains",
       "digest": {
-        "sha256": "7cd8d408a6184e0923cef34cc6a8b2f012c9faef337272677adf093e3ea73c2a"
+        "sha256": "0028d7cacb67c4eb8eb121fa1d8e78a527be55b522d9594a863eaebc13b9e09b"
       }
     }
   ],
@@ -24,15 +24,15 @@
                   "params": [
                     {
                       "name": "url",
-                      "value": "https://github.com/lcarva/ec-policies.git"
+                      "value": "https://github.com/enterprise-contract/hacks.git"
                     },
                     {
                       "name": "revision",
-                      "value": "727f8cae69fdfbae7cf8a44fd5e2055ad9573fb9"
+                      "value": "4fceb2416020011e794105f113a3913ef659c8ee"
                     },
                     {
                       "name": "pathInRepo",
-                      "value": "integration/task/mock-git-clone.yaml"
+                      "value": "provenance/task/mock-git-clone.yaml"
                     }
                   ]
                 },
@@ -97,6 +97,22 @@
                 ]
               },
               {
+                "name": "av-scan",
+                "taskRef": {
+                  "name": "mock-av-scanner",
+                  "kind": "Task"
+                },
+                "runAfter": [
+                  "git-clone"
+                ],
+                "params": [
+                  {
+                    "name": "TEST_OUTPUT",
+                    "value": "$(params.TEST_OUTPUT)"
+                  }
+                ]
+              },
+              {
                 "name": "build",
                 "taskRef": {
                   "kind": "Task",
@@ -104,7 +120,7 @@
                   "params": [
                     {
                       "name": "bundle",
-                      "value": "quay.io/lucarval/test-policies-chains@sha256:eddc8ae8a13347bd8fdaa1843cc62eac9d3cc12801cd48fe858c087bfba9bd7f"
+                      "value": "quay.io/lucarval/test-policies-chains@sha256:0a84e1c324e078159c0d8297fd3a019aea328d936e42bc210e9ba56899f2727e"
                     },
                     {
                       "name": "name",
@@ -183,7 +199,7 @@
           "params": [
             {
               "name": "IMAGE_DIGEST",
-              "value": "sha256:7cd8d408a6184e0923cef34cc6a8b2f012c9faef337272677adf093e3ea73c2a"
+              "value": "sha256:0028d7cacb67c4eb8eb121fa1d8e78a527be55b522d9594a863eaebc13b9e09b"
             },
             {
               "name": "IMAGE_URL",
@@ -195,11 +211,11 @@
             },
             {
               "name": "commit",
-              "value": "fc98226c7a4206e9b4e9fe99172ddc3a5ae6edfa"
+              "value": "0a658ba16047306208ab5e93de506eda617f3177"
             },
             {
               "name": "committer-date",
-              "value": "1697559014"
+              "value": "1704741457"
             },
             {
               "name": "url",
@@ -218,9 +234,9 @@
           "DisableCredsInit": false,
           "RunningInEnvWithInjectedSidecars": true,
           "RequireGitSSHSecretKnownHosts": false,
-          "EnableTektonOCIBundles": false,
+          "EnableTektonOCIBundles": true,
           "ScopeWhenExpressionsToTask": false,
-          "EnableAPIFields": "beta",
+          "EnableAPIFields": "alpha",
           "SendCloudEventsForRuns": false,
           "AwaitSidecarReadiness": true,
           "EnforceNonfalsifiability": "none",
@@ -234,29 +250,29 @@
       },
       "resolvedDependencies": [
         {
-          "uri": "git+https://github.com/lcarva/ec-policies.git",
+          "uri": "git+https://github.com/enterprise-contract/hacks.git",
           "digest": {
-            "sha1": "727f8cae69fdfbae7cf8a44fd5e2055ad9573fb9"
+            "sha1": "4fceb2416020011e794105f113a3913ef659c8ee"
           },
           "name": "pipelineTask"
         },
         {
           "uri": "oci://registry.access.redhat.com/ubi9",
           "digest": {
-            "sha256": "20f695d2a91352d4eaa25107535126727b5945bff38ed36a3e59590f495046f0"
+            "sha256": "fc300be6adbdf2ca812ad01efd0dee2a3e3f5d33958ad6cd99159e25e9ee1398"
           }
         },
         {
           "uri": "quay.io/lucarval/test-policies-chains",
           "digest": {
-            "sha256": "eddc8ae8a13347bd8fdaa1843cc62eac9d3cc12801cd48fe858c087bfba9bd7f"
+            "sha256": "0a84e1c324e078159c0d8297fd3a019aea328d936e42bc210e9ba56899f2727e"
           },
           "name": "pipelineTask"
         },
         {
           "uri": "git+gitspam.spam/spam/spam.git",
           "digest": {
-            "sha1": "fc98226c7a4206e9b4e9fe99172ddc3a5ae6edfa"
+            "sha1": "0a658ba16047306208ab5e93de506eda617f3177"
           },
           "name": "inputs/result"
         }
@@ -267,9 +283,9 @@
         "id": "https://tekton.dev/chains/v2"
       },
       "metadata": {
-        "invocationID": "3db243c8-57cc-47ea-847d-93a1e17bbe79",
-        "startedOn": "2023-10-17T16:10:14Z",
-        "finishedOn": "2023-10-17T16:10:29Z"
+        "invocationID": "cecd54a8-c528-48b4-b94b-94c3d10949d2",
+        "startedOn": "2024-01-08T19:17:38Z",
+        "finishedOn": "2024-01-08T19:17:54Z"
       },
       "byproducts": [
         {
@@ -280,7 +296,7 @@
         {
           "name": "pipelineRunResults/IMAGE_DIGEST",
           "mediaType": "application/json",
-          "content": "InNoYTI1Njo3Y2Q4ZDQwOGE2MTg0ZTA5MjNjZWYzNGNjNmE4YjJmMDEyYzlmYWVmMzM3MjcyNjc3YWRmMDkzZTNlYTczYzJhIg=="
+          "content": "InNoYTI1NjowMDI4ZDdjYWNiNjdjNGViOGViMTIxZmExZDhlNzhhNTI3YmU1NWI1MjJkOTU5NGE4NjNlYWViYzEzYjllMDliIg=="
         },
         {
           "name": "pipelineRunResults/CHAINS-GIT_URL",
@@ -290,7 +306,7 @@
         {
           "name": "pipelineRunResults/CHAINS-GIT_COMMIT",
           "mediaType": "application/json",
-          "content": "ImZjOTgyMjZjN2E0MjA2ZTliNGU5ZmU5OTE3MmRkYzNhNWFlNmVkZmEi"
+          "content": "IjBhNjU4YmExNjA0NzMwNjIwOGFiNWU5M2RlNTA2ZWRhNjE3ZjMxNzci"
         }
       ]
     }
