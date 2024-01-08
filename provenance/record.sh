@@ -208,7 +208,9 @@ function decode_attestation_content() {
   jq "$jq_query" "$att_file" > "$decoded_content_att_file"
 
   # If there were no changes then the file is useless so let's remove it
+  set +e
   diff "$att_file" "$decoded_content_att_file" >/dev/null && rm -f "$decoded_content_att_file"
+  set -e
 }
 
 function setup_scenario() {
