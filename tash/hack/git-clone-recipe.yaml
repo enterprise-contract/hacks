@@ -1,5 +1,5 @@
 ---
-base: ../../build-definitions/task/git-clone/0.1/git-clone.yaml
+base: ../../../build-definitions/task/git-clone/0.1/git-clone.yaml
 removeParams:
   - gitInitImage
   - deleteExisting
