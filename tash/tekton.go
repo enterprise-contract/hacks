@@ -39,6 +39,12 @@ func format(task *pipeline.Task) error {
 		return strings.Compare(a.Name, b.Name)
 	})
 
+	for i := range task.Spec.Steps {
+		slices.SortFunc(task.Spec.Steps[i].Env, func(a, b core.EnvVar) int {
+			return strings.Compare(a.Name, b.Name)
+		})
+	}
+
 	return nil
 }
 

@@ -2,7 +2,8 @@
 removeParams:
   - BUILDER_IMAGE
 add:
-  - use
+  - use-source
+  - use-cachi2
 removeWorkspaces:
   - source
 replacements:

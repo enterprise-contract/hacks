@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
+	"sigs.k8s.io/yaml"
 )
 
 func TestGolden(t *testing.T) {
@@ -39,6 +40,10 @@ func TestGolden(t *testing.T) {
 			}
 
 			if diff := cmp.Diff(expected, task); diff != "" {
+				b, _ := yaml.Marshal(expected)
+				_ = os.WriteFile(path.Join(path.Join("golden", dir.Name(), "expected")), b, 0644)
+				b, _ = yaml.Marshal(task)
+				_ = os.WriteFile(path.Join(path.Join("golden", dir.Name(), "got")), b, 0644)
 				t.Errorf("%s mismatch (-want +got):\n%s", dir.Name(), diff)
 			}
 		})
