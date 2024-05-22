@@ -1,6 +1,7 @@
 package main
 
 import (
+	"io"
 	"os"
 	"slices"
 	"strings"
@@ -17,13 +18,18 @@ func readTask(path string) (*pipeline.Task, error) {
 	return &task, yaml.Unmarshal(b, &task)
 }
 
-func writeTask(task *pipeline.Task, path string) error {
+func writeTask(task *pipeline.Task, writer io.Writer) error {
+	if c, ok := writer.(io.Closer); ok {
+		defer c.Close()
+	}
 	b, err := yaml.Marshal(task)
 	if err != nil {
 		return err
 	}
 
-	return os.WriteFile(path, b, 0644)
+	_, err = writer.Write(b)
+
+	return err
 }
 
 func format(task *pipeline.Task) error {

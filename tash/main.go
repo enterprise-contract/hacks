@@ -2,7 +2,6 @@ package main
 
 import (
 	"os"
-	"path"
 )
 
 func main() {
@@ -12,5 +11,5 @@ func main() {
 
 	expect(perform(task, recipe))
 
-	expect(writeTask(task, path.Base(recipe.Base)))
+	expect(writeTask(task, os.Stdout))
 }
