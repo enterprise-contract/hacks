@@ -2,6 +2,7 @@ package main
 
 import (
 	"os"
+	"path/filepath"
 	"slices"
 	"sort"
 
@@ -51,6 +52,10 @@ func readRecipe(path string) (*Recipe, error) {
 	_, recipe.createSource = slices.BinarySearch(recipe.Add, "create-source")
 	_, recipe.useCachi2 = slices.BinarySearch(recipe.Add, "use-cachi2")
 	_, recipe.useSource = slices.BinarySearch(recipe.Add, "use-source")
+
+	if !filepath.IsAbs(recipe.Base) {
+		recipe.Base = filepath.Join(filepath.Dir(path), recipe.Base)
+	}
 
 	return &recipe, nil
 }
