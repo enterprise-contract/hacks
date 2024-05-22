@@ -1,0 +1,52 @@
+name: Build TASH
+"on":
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'tash/**'
+  push:
+    branches:
+      - main
+    paths:
+      - 'tash/**'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@a4aa98b93cab29d9b1101a6143fb8bce00e2eac4 # v2.7.1
+        with:
+          egress-policy: audit
+          disable-telemetry: true
+
+      - name: Checkout repository
+        uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29 # v4.1.6
+
+      - name: Setup Go environment
+        uses: actions/setup-go@cdcb36043654635271a94b9a6d1392de5bb323a7 # v5.0.1
+        with:
+          go-version-file: tash/go.mod
+          cache: false
+
+      - name: Test
+        working-directory: tash
+        run: go test
+
+      - name: Build
+        working-directory: tash
+        run: go build
+
+      - name: Release
+        if: ${{ github.ref == 'refs/heads/main' }}
+        uses: softprops/action-gh-release@69320dbe05506a9a39fc8ae11030b214ec2d1f87 # v2.0.5
+        with:
+          make_latest: true
+          name: Latest release
+          body: Stable rolling release
+          tag_name: latest
+          generate_release_notes: false
+          files: tash/tash
