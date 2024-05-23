@@ -34,6 +34,10 @@ for repo in $APPLICABLE_REPOS; do
     # Show the raw grep results
     echo "$GREP_OUTPUT"
 
+  elif [[ $OPT_RAW == "--short" ]]; then
+    # Simpler output
+    echo "$GREP_OUTPUT" | cut -d':' -f4,5,6 | sort | uniq
+
   else
     # Show the commit message for the unique shas found.
     # The multiple cuts are to pull the git shas from lines like this:
