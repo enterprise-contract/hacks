@@ -309,9 +309,5 @@ func perform(task *pipeline.Task, recipe *Recipe) error {
 		task.Spec.Steps = append(task.Spec.Steps, create)
 	}
 
-	if err := format(task); err != nil {
-		return err
-	}
-
 	return nil
 }

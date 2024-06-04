@@ -1,12 +1,15 @@
 package main
 
 import (
+	"bytes"
+	"errors"
+	"fmt"
 	"os"
 	"path"
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
-	"sigs.k8s.io/yaml"
+	"github.com/zregvart/tkn-fmt/format"
 )
 
 func TestGolden(t *testing.T) {
@@ -21,10 +24,6 @@ func TestGolden(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
-			expected, err := readTask(path.Join("golden", dir.Name(), "ta.yaml"))
-			if err != nil {
-				t.Fatal(err)
-			}
 
 			recipe, err := readRecipe(path.Join("golden", dir.Name(), "recipe.yaml"))
 			if err != nil {
@@ -35,16 +34,32 @@ func TestGolden(t *testing.T) {
 				t.Fatal(err)
 			}
 
-			if err := format(expected); err != nil {
+			got := bytes.Buffer{}
+			if err := writeTask(task, &got); err != nil {
 				t.Fatal(err)
 			}
 
-			if diff := cmp.Diff(expected, task); diff != "" {
-				b, _ := yaml.Marshal(expected)
-				_ = os.WriteFile(path.Join(path.Join("golden", dir.Name(), "expected")), b, 0644)
-				b, _ = yaml.Marshal(task)
-				_ = os.WriteFile(path.Join(path.Join("golden", dir.Name(), "got")), b, 0644)
-				t.Errorf("%s mismatch (-want +got):\n%s", dir.Name(), diff)
+			ta, err := os.Open(path.Join("golden", dir.Name(), "ta.yaml"))
+			if err != nil {
+				t.Fatal(err)
+			}
+
+			expected := bytes.Buffer{}
+			if err := format.Format(ta, &expected); err != nil {
+				t.Fatal(err)
+			}
+
+			if diff := cmp.Diff(expected.String(), got.String()); diff != "" {
+				failure := fmt.Errorf("%s mismatch (-want +got):\n%s", dir.Name(), diff)
+				if err := os.WriteFile(path.Join(path.Join("golden", dir.Name(), "got")), got.Bytes(), 0644); err != nil {
+					failure = errors.Join(failure, err)
+				}
+				if err := os.WriteFile(path.Join(path.Join("golden", dir.Name(), "expected")), expected.Bytes(), 0644); err != nil {
+					failure = errors.Join(failure, err)
+				}
+
+				t.Error(failure)
+
 			}
 		})
 	}
