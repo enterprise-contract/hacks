@@ -367,6 +367,8 @@ github.com/zregvart/tkn-fmt v0.0.0-20240604105643-5af9e73081f1 h1:ZlJH3NlViPbVGB
 github.com/zregvart/tkn-fmt v0.0.0-20240604105643-5af9e73081f1/go.mod h1:t7139snuK35qgYLly1CaLLVZy6UCkz/KmN/AevOJi+k=
 github.com/zregvart/tkn-fmt v0.0.0-20240604141006-82e9e231d136 h1:og54UnNpME81H8ZAt2qSloJym9j38VSjFcbr/+7IGE4=
 github.com/zregvart/tkn-fmt v0.0.0-20240604141006-82e9e231d136/go.mod h1:t7139snuK35qgYLly1CaLLVZy6UCkz/KmN/AevOJi+k=
+github.com/zregvart/tkn-fmt v0.0.0-20240605113210-88b05be46840 h1:ljzgovzDAqsdTPUXcrf9hS7li3qvnmFsM+QunbI2Qo8=
+github.com/zregvart/tkn-fmt v0.0.0-20240605113210-88b05be46840/go.mod h1:t7139snuK35qgYLly1CaLLVZy6UCkz/KmN/AevOJi+k=
 go.opencensus.io v0.21.0/go.mod h1:mSImk1erAIZhrmZN+AvHh14ztQfjbGwt4TtuofqLduU=
 go.opencensus.io v0.22.0/go.mod h1:+kGneAE2xo2IficOXnaByMWTGM9T73dGwxeWcUqIpI8=
 go.opencensus.io v0.22.2/go.mod h1:yxeiOL68Rb0Xd1ddK5vPZ/oVn4vY4Ynel7k9FzqtOIw=

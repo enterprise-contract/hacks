@@ -5,7 +5,7 @@ go 1.22.3
 require (
 	github.com/google/go-cmp v0.6.0
 	github.com/tektoncd/pipeline v0.60.1
-	github.com/zregvart/tkn-fmt v0.0.0-20240604141006-82e9e231d136
+	github.com/zregvart/tkn-fmt v0.0.0-20240605113210-88b05be46840
 	k8s.io/api v0.30.1
 	mvdan.cc/sh/v3 v3.8.0
 	sigs.k8s.io/yaml v1.4.0
