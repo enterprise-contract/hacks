@@ -11,9 +11,15 @@ import (
 	"sigs.k8s.io/yaml"
 )
 
+type AdditionalStep struct {
+	pipeline.Step
+	At int `json:"at"`
+}
+
 type Recipe struct {
 	Add                []string              `json:"add"`
 	AddEnvironment     []core.EnvVar         `json:"addEnvironment"`
+	AdditionalSteps    []AdditionalStep      `json:"additionalSteps"`
 	AddParams          pipeline.ParamSpecs   `json:"addParams"`
 	AddResult          []pipeline.TaskResult `json:"addResult"`
 	AddVolume          []core.Volume         `json:"addVolume"`

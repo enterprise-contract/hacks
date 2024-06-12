@@ -309,5 +309,9 @@ func perform(task *pipeline.Task, recipe *Recipe) error {
 		task.Spec.Steps = append(task.Spec.Steps, create)
 	}
 
+	for _, additional := range recipe.AdditionalSteps {
+		task.Spec.Steps = slices.Insert(task.Spec.Steps, additional.At, additional.Step)
+	}
+
 	return nil
 }
