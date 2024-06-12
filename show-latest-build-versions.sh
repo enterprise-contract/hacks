@@ -7,7 +7,7 @@ set -o pipefail
 RH_TITLE="Red Hat Build"
 RH_REPO="registry.redhat.io/rhtas/ec-rhel9"
 # There's no latest tag but there is a floating tag, currently 0.2
-RH_TAG="${1:-"0.2"}"
+RH_TAG="${1:-"0.4"}"
 
 UPSTREAM_TITLE="Upstream Build"
 UPSTREAM_REPO="quay.io/enterprise-contract/ec-cli"
