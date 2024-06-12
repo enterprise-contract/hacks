@@ -14,7 +14,7 @@ import (
 
 var (
 	parser  = syntax.NewParser(syntax.KeepComments(true))
-	printer = syntax.NewPrinter(syntax.KeepPadding(true), syntax.Indent(2))
+	printer = syntax.NewPrinter(syntax.KeepPadding(true), syntax.Indent(2), syntax.SpaceRedirects(true))
 )
 
 func removeEnvUse(f *syntax.File, name string) []*syntax.Stmt {
