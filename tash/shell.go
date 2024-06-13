@@ -123,6 +123,15 @@ func replaceLiterals(f *syntax.File, rx map[*regexp.Regexp]string) []*syntax.Stm
 	return f.Stmts
 }
 
+var tektonVariables = regexp.MustCompile(`\$\( (results|params|workspaces|credentials|context|steps)\b`)
+
+// fixTektonVariables ensures references to a Tekton variable do not contain a leading space as that
+// prevents Tekton from processing them. For example, "$( results" is replaced with "$(results"
+// https://tekton.dev/docs/pipelines/variables/#variables-available-in-a-task
+func fixTektonVariables(buf bytes.Buffer) string {
+	return tektonVariables.ReplaceAllString(buf.String(), "$($1")
+}
+
 func formatScripts(task *pipeline.Task) error {
 	for i := range task.Spec.Steps {
 		if !isShell(task.Spec.Steps[i].Script) {
