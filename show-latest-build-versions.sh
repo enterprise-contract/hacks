@@ -17,12 +17,16 @@ UPSTREAM_TAG="snapshot"
 _show_details() {
 	local title="$1"
 	local ref="$2"
+	local ver="${3/./}"
 
 	# Make sure we have the latest
 	podman pull --quiet $ref >/dev/null
 
 	# Get the digest
 	local digest="$(skopeo inspect "docker://$ref" | jq -r .Digest)"
+
+	# The likely original Konflux built image
+	local konflux_image="quay.io/redhat-user-workloads/rhtap-contract-tenant/ec-$ver/cli-$ver@$digest"
 
 	if [ "$VERBOSE" = "1" ]; then
 		# Verbose output
@@ -35,6 +39,11 @@ _show_details() {
 
 		echo Pinned ref:
 		echo "   $ref@$digest"
+
+		if [[ "$ver" =~ ^v0 ]]; then
+			echo Likely Konflux build ref:
+			echo "   $konflux_image"
+		fi
 
 		echo Version:
 		podman run --rm "$ref@$digest" version | sed 's/^/   /'
@@ -50,6 +59,7 @@ _show_details() {
 	else
 		# Brief output
 		echo "$ref@$digest"
+		[[ "$ver" =~ ^v0 ]] && echo "$konflux_image"
 		podman run --rm "$ref@$digest" version | sed 's/^/   /' | head -3
 		echo ""
 
@@ -57,7 +67,7 @@ _show_details() {
 }
 
 for t in ${RH_TAGS}; do
-	_show_details "$RH_TITLE ($t)" "$RH_REPO:$t"
+	_show_details "$RH_TITLE ($t)" "$RH_REPO:$t" "v$t"
 done
 
-_show_details "$UPSTREAM_TITLE" "$UPSTREAM_REPO:$UPSTREAM_TAG"
+_show_details "$UPSTREAM_TITLE" "$UPSTREAM_REPO:$UPSTREAM_TAG" "main-ci"
