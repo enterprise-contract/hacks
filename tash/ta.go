@@ -8,7 +8,6 @@ import (
 	"strings"
 
 	pipeline "github.com/tektoncd/pipeline/pkg/apis/pipeline/v1"
-	"github.com/zregvart/tkn-fmt/format"
 	core "k8s.io/api/core/v1"
 )
 
@@ -257,7 +256,7 @@ func perform(task *pipeline.Task, recipe *Recipe) error {
 			return err
 		}
 
-		task.Spec.Steps[i].Script = format.FixTektonVariables(buf)
+		task.Spec.Steps[i].Script = buf.String()
 	}
 
 	if recipe.useSource || recipe.useCachi2 {
