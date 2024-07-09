@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"os"
 	"path"
+	"strings"
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
@@ -44,17 +45,19 @@ func TestGolden(t *testing.T) {
 				t.Fatal(err)
 			}
 
-			expected := bytes.Buffer{}
-			if err := format.Format(ta, &expected); err != nil {
+			golden := bytes.Buffer{}
+			if err := format.Format(ta, &golden); err != nil {
 				t.Fatal(err)
 			}
 
-			if diff := cmp.Diff(expected.String(), got.String()); diff != "" {
+			expected := strings.ReplaceAll(golden.String(), "quay.io/redhat-appstudio/build-trusted-artifacts:latest@sha256:placeholder", image)
+
+			if diff := cmp.Diff(expected, got.String()); diff != "" {
 				failure := fmt.Errorf("%s mismatch (-want +got):\n%s", dir.Name(), diff)
 				if err := os.WriteFile(path.Join(path.Join("golden", dir.Name(), "got")), got.Bytes(), 0644); err != nil {
 					failure = errors.Join(failure, err)
 				}
-				if err := os.WriteFile(path.Join(path.Join("golden", dir.Name(), "expected")), expected.Bytes(), 0644); err != nil {
+				if err := os.WriteFile(path.Join(path.Join("golden", dir.Name(), "expected")), golden.Bytes(), 0644); err != nil {
 					failure = errors.Join(failure, err)
 				}
 

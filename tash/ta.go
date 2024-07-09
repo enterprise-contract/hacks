@@ -7,13 +7,27 @@ import (
 	"slices"
 	"strings"
 
+	"github.com/google/go-containerregistry/pkg/authn"
+	"github.com/google/go-containerregistry/pkg/name"
+	"github.com/google/go-containerregistry/pkg/v1/remote"
 	pipeline "github.com/tektoncd/pipeline/pkg/apis/pipeline/v1"
 	core "k8s.io/api/core/v1"
 )
 
-func perform(task *pipeline.Task, recipe *Recipe) error {
-	image := "quay.io/redhat-appstudio/build-trusted-artifacts:latest@sha256:bf4bfae950fe31d08f44488bb788bea8800cd6d75f5e09fcc21cf98689c61185"
+var image = ""
 
+func init() {
+	ref := name.MustParseReference("quay.io/redhat-appstudio/build-trusted-artifacts:latest")
+
+	desc, err := remote.Head(ref, remote.WithAuthFromKeychain(authn.DefaultKeychain))
+	if err != nil {
+		panic(err)
+	}
+
+	image = "quay.io/redhat-appstudio/build-trusted-artifacts:latest@" + desc.Digest.String()
+}
+
+func perform(task *pipeline.Task, recipe *Recipe) error {
 	sourceResult := pipeline.TaskResult{
 		Name:        "SOURCE_ARTIFACT",
 		Description: "The Trusted Artifact URI pointing to the artifact with the application source code.",
