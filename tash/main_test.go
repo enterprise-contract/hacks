@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"os"
 	"path"
-	"strings"
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
@@ -19,6 +18,10 @@ func TestGolden(t *testing.T) {
 		t.Fatal(err)
 	}
 
+	resolveImage = func() string {
+		return "quay.io/redhat-appstudio/build-trusted-artifacts:latest@sha256:resolved"
+	}
+
 	for _, dir := range dirs {
 		t.Run(dir.Name(), func(t *testing.T) {
 			task, err := readTask(path.Join("golden", dir.Name(), "base.yaml"))
@@ -29,6 +32,15 @@ func TestGolden(t *testing.T) {
 			recipe, err := readRecipe(path.Join("golden", dir.Name(), "recipe.yaml"))
 			if err != nil {
 				t.Fatal(err)
+			}
+
+			switch dir.Name() {
+			case "buildah":
+				image = "" // force resolve
+			case "git-clone":
+				image = "quay.io/redhat-appstudio/build-trusted-artifacts:latest@sha256:existing" // use existing
+			default:
+				image = "quay.io/redhat-appstudio/build-trusted-artifacts:latest@sha256:placeholder"
 			}
 
 			if err := perform(task, recipe); err != nil {
@@ -50,7 +62,7 @@ func TestGolden(t *testing.T) {
 				t.Fatal(err)
 			}
 
-			expected := strings.ReplaceAll(golden.String(), "quay.io/redhat-appstudio/build-trusted-artifacts:latest@sha256:placeholder", image)
+			expected := golden.String()
 
 			if diff := cmp.Diff(expected, got.String()); diff != "" {
 				failure := fmt.Errorf("%s mismatch (-want +got):\n%s", dir.Name(), diff)

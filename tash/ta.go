@@ -14,20 +14,32 @@ import (
 	core "k8s.io/api/core/v1"
 )
 
-var image = ""
+var (
+	image = ""
 
-func init() {
-	ref := name.MustParseReference("quay.io/redhat-appstudio/build-trusted-artifacts:latest")
+	resolveImage = func() string {
+		ref := name.MustParseReference("quay.io/redhat-appstudio/build-trusted-artifacts:latest")
 
-	desc, err := remote.Head(ref, remote.WithAuthFromKeychain(authn.DefaultKeychain))
-	if err != nil {
-		panic(err)
+		desc, err := remote.Head(ref, remote.WithAuthFromKeychain(authn.DefaultKeychain))
+		if err != nil {
+			panic(err)
+		}
+
+		return "quay.io/redhat-appstudio/build-trusted-artifacts:latest@" + desc.Digest.String()
+	}
+)
+
+func ensureImage() {
+	if image != "" {
+		return
 	}
 
-	image = "quay.io/redhat-appstudio/build-trusted-artifacts:latest@" + desc.Digest.String()
+	image = resolveImage()
 }
 
 func perform(task *pipeline.Task, recipe *Recipe) error {
+	ensureImage()
+
 	sourceResult := pipeline.TaskResult{
 		Name:        "SOURCE_ARTIFACT",
 		Description: "The Trusted Artifact URI pointing to the artifact with the application source code.",
