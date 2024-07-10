@@ -3,6 +3,8 @@ package main
 import (
 	"fmt"
 	"os"
+	"path"
+	"strings"
 )
 
 func main() {
@@ -11,9 +13,25 @@ func main() {
 		os.Exit(1)
 	}
 
-	recipe := expectValue(readRecipe(os.Args[1]))
+	recipePath := os.Args[1]
+
+	recipe := expectValue(readRecipe(recipePath))
 
 	task := expectValue(readTask(recipe.Base))
+
+	taDir := path.Dir(recipePath)
+
+	taTaskPath := path.Join(taDir, path.Base(path.Dir(taDir))+".yaml")
+
+	if _, err := os.Stat(taTaskPath); err == nil {
+		existing := expectValue(readTask(taTaskPath))
+		for _, step := range existing.Spec.Steps {
+			if strings.Contains(step.Image, "/build-trusted-artifacts:") {
+				image = step.Image
+				break
+			}
+		}
+	}
 
 	expect(perform(task, recipe))
 

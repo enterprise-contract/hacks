@@ -13,6 +13,7 @@ import (
 
 func readTask(path string) (*pipeline.Task, error) {
 	b := expectValue(os.ReadFile(path))
+	b = bytes.TrimLeft(b, "---\n")
 	task := pipeline.Task{}
 	return &task, yaml.Unmarshal(b, &task)
 }
