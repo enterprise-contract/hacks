@@ -106,15 +106,11 @@ func removeUnusedFunctions(f *syntax.File) []*syntax.Stmt {
 func replaceLiterals(f *syntax.File, rx map[*regexp.Regexp]string) []*syntax.Stmt {
 	syntax.Walk(f, func(n syntax.Node) bool {
 		if l, ok := n.(*syntax.Lit); ok {
-			for ex, new := range rx {
-				l.Value = ex.ReplaceAllString(l.Value, new)
-			}
+			l.Value = applyRegexReplacements(l.Value, rx)
 		}
 		if s, ok := n.(*syntax.Stmt); ok {
 			for i := range s.Comments {
-				for ex, new := range rx {
-					s.Comments[i].Text = ex.ReplaceAllString(s.Comments[i].Text, new)
-				}
+				s.Comments[i].Text = applyRegexReplacements(s.Comments[i].Text, rx)
 			}
 		}
 		return true

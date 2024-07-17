@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"io"
 	"os"
+	"regexp"
 
 	pipeline "github.com/tektoncd/pipeline/pkg/apis/pipeline/v1"
 	"github.com/tektoncd/pipeline/pkg/substitution"
@@ -35,4 +36,12 @@ func writeTask(task *pipeline.Task, writer io.Writer) error {
 
 func applyReplacements(in string, replacements map[string]string) string {
 	return substitution.ApplyReplacements(in, replacements)
+}
+
+func applyRegexReplacements(in string, replacements map[*regexp.Regexp]string) string {
+	out := in
+	for ex, new := range replacements {
+		out = ex.ReplaceAllString(out, new)
+	}
+	return out
 }

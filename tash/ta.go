@@ -247,10 +247,7 @@ func perform(task *pipeline.Task, recipe *Recipe) error {
 		}
 
 		task.Spec.Steps[i].WorkingDir = applyReplacements(task.Spec.Steps[i].WorkingDir, recipe.Replacements)
-
-		for ex, new := range rx {
-			task.Spec.Steps[i].WorkingDir = ex.ReplaceAllString(task.Spec.Steps[i].WorkingDir, new)
-		}
+		task.Spec.Steps[i].WorkingDir = applyRegexReplacements(task.Spec.Steps[i].WorkingDir, rx)
 
 		if !isShell(task.Spec.Steps[i].Script) {
 			continue
