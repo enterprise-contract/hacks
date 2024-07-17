@@ -182,6 +182,15 @@ func perform(task *pipeline.Task, recipe *Recipe) error {
 		}
 	}
 
+	rx := map[*regexp.Regexp]string{}
+	for old, new := range recipe.RegexReplacements {
+		ex, err := regexp.Compile(old)
+		if err != nil {
+			panic(err)
+		}
+		rx[ex] = new
+	}
+
 	templateEnv := make([]string, 0, 5)
 	if task.Spec.StepTemplate != nil || recipe.PreferStepTemplate {
 		if task.Spec.StepTemplate == nil {
@@ -206,6 +215,14 @@ func perform(task *pipeline.Task, recipe *Recipe) error {
 		task.Spec.StepTemplate.VolumeMounts = append(task.Spec.StepTemplate.VolumeMounts, recipe.AddVolumeMount...)
 
 		task.Spec.StepTemplate.Env = slices.DeleteFunc(task.Spec.StepTemplate.Env, removeEnv(&templateEnv))
+
+		for i := range task.Spec.StepTemplate.Env {
+			task.Spec.StepTemplate.Env[i].Value = applyReplacements(task.Spec.StepTemplate.Env[i].Value, recipe.Replacements)
+			task.Spec.StepTemplate.Env[i].Value = applyRegexReplacements(task.Spec.StepTemplate.Env[i].Value, rx)
+		}
+
+		task.Spec.StepTemplate.WorkingDir = applyReplacements(task.Spec.StepTemplate.WorkingDir, recipe.Replacements)
+		task.Spec.StepTemplate.WorkingDir = applyRegexReplacements(task.Spec.StepTemplate.WorkingDir, rx)
 	}
 
 	for i := range task.Spec.Steps {
@@ -213,6 +230,7 @@ func perform(task *pipeline.Task, recipe *Recipe) error {
 
 		for j := range task.Spec.Steps[i].Env {
 			task.Spec.Steps[i].Env[j].Value = applyReplacements(task.Spec.Steps[i].Env[j].Value, recipe.Replacements)
+			task.Spec.Steps[i].Env[j].Value = applyRegexReplacements(task.Spec.Steps[i].Env[j].Value, rx)
 		}
 
 		task.Spec.Steps[i].Env = slices.DeleteFunc(task.Spec.Steps[i].Env, removeEnv(&env))
@@ -238,18 +256,7 @@ func perform(task *pipeline.Task, recipe *Recipe) error {
 		}
 
 		task.Spec.Steps[i].WorkingDir = applyReplacements(task.Spec.Steps[i].WorkingDir, recipe.Replacements)
-
-		rx := map[*regexp.Regexp]string{}
-		for old, new := range recipe.RegexReplacements {
-			ex, err := regexp.Compile(old)
-			if err != nil {
-				panic(err)
-			}
-			rx[ex] = new
-		}
-		for ex, new := range rx {
-			task.Spec.Steps[i].WorkingDir = ex.ReplaceAllString(task.Spec.Steps[i].WorkingDir, new)
-		}
+		task.Spec.Steps[i].WorkingDir = applyRegexReplacements(task.Spec.Steps[i].WorkingDir, rx)
 
 		if !isShell(task.Spec.Steps[i].Script) {
 			continue
