@@ -222,6 +222,7 @@ func perform(task *pipeline.Task, recipe *Recipe) error {
 
 		for j := range task.Spec.Steps[i].Env {
 			task.Spec.Steps[i].Env[j].Value = applyReplacements(task.Spec.Steps[i].Env[j].Value, recipe.Replacements)
+			task.Spec.Steps[i].Env[j].Value = applyRegexReplacements(task.Spec.Steps[i].Env[j].Value, rx)
 		}
 
 		task.Spec.Steps[i].Env = slices.DeleteFunc(task.Spec.Steps[i].Env, removeEnv(&env))
