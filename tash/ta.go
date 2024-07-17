@@ -182,6 +182,15 @@ func perform(task *pipeline.Task, recipe *Recipe) error {
 		}
 	}
 
+	rx := map[*regexp.Regexp]string{}
+	for old, new := range recipe.RegexReplacements {
+		ex, err := regexp.Compile(old)
+		if err != nil {
+			panic(err)
+		}
+		rx[ex] = new
+	}
+
 	templateEnv := make([]string, 0, 5)
 	if task.Spec.StepTemplate != nil || recipe.PreferStepTemplate {
 		if task.Spec.StepTemplate == nil {
@@ -206,15 +215,14 @@ func perform(task *pipeline.Task, recipe *Recipe) error {
 		task.Spec.StepTemplate.VolumeMounts = append(task.Spec.StepTemplate.VolumeMounts, recipe.AddVolumeMount...)
 
 		task.Spec.StepTemplate.Env = slices.DeleteFunc(task.Spec.StepTemplate.Env, removeEnv(&templateEnv))
-	}
 
-	rx := map[*regexp.Regexp]string{}
-	for old, new := range recipe.RegexReplacements {
-		ex, err := regexp.Compile(old)
-		if err != nil {
-			panic(err)
+		for i := range task.Spec.StepTemplate.Env {
+			task.Spec.StepTemplate.Env[i].Value = applyReplacements(task.Spec.StepTemplate.Env[i].Value, recipe.Replacements)
+			task.Spec.StepTemplate.Env[i].Value = applyRegexReplacements(task.Spec.StepTemplate.Env[i].Value, rx)
 		}
-		rx[ex] = new
+
+		task.Spec.StepTemplate.WorkingDir = applyReplacements(task.Spec.StepTemplate.WorkingDir, recipe.Replacements)
+		task.Spec.StepTemplate.WorkingDir = applyRegexReplacements(task.Spec.StepTemplate.WorkingDir, rx)
 	}
 
 	for i := range task.Spec.Steps {
