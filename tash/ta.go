@@ -208,6 +208,15 @@ func perform(task *pipeline.Task, recipe *Recipe) error {
 		task.Spec.StepTemplate.Env = slices.DeleteFunc(task.Spec.StepTemplate.Env, removeEnv(&templateEnv))
 	}
 
+	rx := map[*regexp.Regexp]string{}
+	for old, new := range recipe.RegexReplacements {
+		ex, err := regexp.Compile(old)
+		if err != nil {
+			panic(err)
+		}
+		rx[ex] = new
+	}
+
 	for i := range task.Spec.Steps {
 		env := make([]string, 0, 5)
 
@@ -239,14 +248,6 @@ func perform(task *pipeline.Task, recipe *Recipe) error {
 
 		task.Spec.Steps[i].WorkingDir = applyReplacements(task.Spec.Steps[i].WorkingDir, recipe.Replacements)
 
-		rx := map[*regexp.Regexp]string{}
-		for old, new := range recipe.RegexReplacements {
-			ex, err := regexp.Compile(old)
-			if err != nil {
-				panic(err)
-			}
-			rx[ex] = new
-		}
 		for ex, new := range rx {
 			task.Spec.Steps[i].WorkingDir = ex.ReplaceAllString(task.Spec.Steps[i].WorkingDir, new)
 		}
