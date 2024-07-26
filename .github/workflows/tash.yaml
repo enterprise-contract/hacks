@@ -40,6 +40,10 @@ jobs:
         working-directory: tash
         run: go build
 
+      - name: Build darwin arm64
+        working-directory: tash
+        run: GOOS=darwin GOARCH=arm64 go build -o tash-darwin-arm64
+
       - name: Release
         if: ${{ github.ref == 'refs/heads/main' }}
         uses: softprops/action-gh-release@c062e08bd532815e2082a85e87e3ef29c3e6d191 # v2.0.8
@@ -49,4 +53,6 @@ jobs:
           body: Stable rolling release
           tag_name: latest
           generate_release_notes: false
-          files: tash/tash
+          files: |
+            tash/tash
+            tash/tash-darwin-arm64
