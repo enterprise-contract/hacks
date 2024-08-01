@@ -12,7 +12,6 @@ set -o nounset
 set -o pipefail
 
 APPLICABLE_REPOS="
-  git@github.com:redhat-appstudio/tenants-config.git
   git@github.com:redhat-appstudio/infra-deployments.git
   git@gitlab.cee.redhat.com:releng/konflux-release-data.git
 "
