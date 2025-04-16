@@ -4,6 +4,9 @@ set -o errexit
 set -o nounset
 set -o pipefail
 
+# Set this to skip the podman pull
+FAST="${FAST:-""}"
+
 # Set this for verbose output
 VERBOSE="${VERBOSE:-""}"
 
@@ -16,7 +19,9 @@ _show_details() {
 	local ver="${3:-""}"
 
 	# Make sure we have the latest
-	podman pull --quiet $ref >/dev/null
+	if [ "$FAST" != "1" ]; then
+		podman pull --quiet $ref >/dev/null
+	fi
 
 	# Get the digest
 	local digest="$(skopeo inspect "docker://$ref" | jq -r .Digest)"
