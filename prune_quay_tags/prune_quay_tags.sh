@@ -114,50 +114,47 @@ BASE_URL="https://quay.io/api/v1/repository/${REPO}/tag/?limit=100"
 DELETED=0
 FOUND=0
 
+ALL_LINES=()
+
 while :; do
-  # Set up curl arguments
-  # -s: silent mode
-  # -G: use GET method
-  curl_args=(-s -G)
+  # build curl args
+  curl_args=( -sfG "${BASE_URL}" )
+  curl_args+=( --data-urlencode "page=${PAGE}" )
+  curl_args+=( --data-urlencode "onlyActiveTags=true" )
+  curl_args+=( --data-urlencode "filter_tag_name=like:${FILTER}" )
+  [[ -n "${QUAY_TOKEN:-}" ]] && curl_args+=( -H "Authorization: Bearer ${QUAY_TOKEN}" )
 
-  # If we have a token, add it to the curl request as a header
-  # -H: add a header
-  if [[ -n "${QUAY_TOKEN:-}" ]]; then
-  curl_args+=( -H "Authorization: Bearer ${QUAY_TOKEN}" )
-  fi
-
-  # now append the URL + query args
-  # --data-urlencode: URL-encode the data
-  curl_args+=( "${BASE_URL}" \
-      --data-urlencode "page=${PAGE}" \
-      --data-urlencode "onlyActiveTags=true" \
-      --data-urlencode "filter_tag_name=like:${FILTER}" \
-  )
-
+  # fetch (will exit on HTTP error thanks to -f)
   RESPONSE=$(curl "${curl_args[@]}")
 
-  # check for errors in the response:
-  if [[ "$(jq -r '.error' <<<"$RESPONSE")" != "null" ]]; then
-    echo "❌ Error fetching tags: $(jq -r '.error' <<<"$RESPONSE")"
+  # check for API‐level error
+  if [[ "$(jq -r '.error // empty' <<<"$RESPONSE")" ]]; then
+    echo "❌ API error: $(jq -r '.error' <<<"$RESPONSE")" >&2
     exit 1
   fi
-  # pull matching lines into a variable:
-  mapfile -t LINES < <(
-    echo "$RESPONSE" |
-        jq -r --arg f "$FILTER" '
-        .tags[]
-        | "\(.name)|\(.last_modified)"
-        '
-  )
 
-  [[ "$(jq -r '.has_additional' <<<"$RESPONSE")" == "true" ]] \
-    && ((PAGE++)) || break
+  # extract and accumulate this page’s tags
+  mapfile -t page_lines < <(
+    jq -r --arg f "$FILTER" '
+      .tags[]
+      | "\(.name)|\(.last_modified)"
+    ' <<<"$RESPONSE"
+  )
+  ALL_LINES+=( "${page_lines[@]}" )
+
+  # pagination check
+  has_additional=$(jq -r '.has_additional // "false"' <<<"$RESPONSE")
+  if [[ "$has_additional" == "true" ]]; then
+    ((PAGE++))
+  else
+    break
+  fi
 done
 
 # ---------------------------
 # Process each matching tag
 # ---------------------------
-for LINE in "${LINES[@]}"; do
+for LINE in "${ALL_LINES[@]}"; do
     IFS="|" read -r tag last_modified <<< "$LINE"
     last_sec=$(date -d "$last_modified" +%s 2>/dev/null || echo 0)
     if [[ "$last_sec" -lt "$CUTOFF" ]]; then
