@@ -11,7 +11,7 @@ FAST="${FAST:-""}"
 VERBOSE="${VERBOSE:-""}"
 
 # Update as required when we cut a new release or stop maintaining an old release
-RH_TAGS="${1:-"0.4 0.5 0.6"}"
+RH_TAGS="${1:-"0.5 0.6"}"
 
 _show_details() {
 	local title="$1"
