@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 #
 # Run this script to quickly answer the question "What version of
-# ec-policies do we think is being used right now in Konflux?"
+# conforma/policy do we think is being used right now in Konflux?"
 #
 # Do it by looking in the applicable git repos, rather than inspecting
 # the cluster/clusters directly, which would probably be more dependable
@@ -16,7 +16,7 @@ APPLICABLE_REPOS="
   git@gitlab.cee.redhat.com:releng/konflux-release-data.git
 "
 
-EC_POLICIES="${PWD}/../ec-policies"
+EC_POLICIES="${PWD}/../policy"
 
 OPT_RAW="${1:-""}"
 
