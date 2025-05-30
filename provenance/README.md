@@ -6,7 +6,7 @@ useful as reference as well as to assist development.
 ## Using the Recordings
 
 We can use a combination of [jq](https://jqlang.github.io/jq/) and the EC CLI to execute policy
-rules defined in ec-policies against the SLSA Provenance samples found in this repo.
+rules defined in conforma/policy against the SLSA Provenance samples found in this repo.
 
 In most cases, SLSA Provenance attestations are processed when evaluating an image. The EC CLI is
 responsible for fetching the attestations associated with the image. Below is an alternative
