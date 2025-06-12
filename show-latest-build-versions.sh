@@ -75,7 +75,7 @@ done
 
 # Built/pushed by Konflux from main branch
 # (Used by Red Hat Konflux)
-_show_details "Main branch Konflux build" "quay.io/enterprise-contract/cli:latest" "main-ci"
+_show_details "Main branch Konflux build" "quay.io/enterprise-contract/cli:latest" "main"
 
 # Built/pushed by GitHub from main branch
 # (Maybe deprecated)
