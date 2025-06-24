@@ -32,34 +32,38 @@ _show_details() {
 	if [ "$VERBOSE" = "1" ]; then
 		# Verbose output
 		echo ""
-		echo $title
-		echo $title | tr '[:print:]' '-'
+		echo "$title"
+		echo "$title" | tr '[:print:]' '-'
 
-		echo Ref:
+		echo "Ref:"
 		echo "   $ref"
 
-		echo Pinned ref:
+		echo "Pinned ref:"
 		echo "   $ref@$digest"
 
 		if [[ -n "$ver" ]]; then
-			echo Likely Konflux build ref:
+			echo "Likely Konflux build ref:"
 			echo "   $konflux_image"
 		fi
 
-		echo Version:
+		# Might not work for GitHub builds
+		echo "View attestations maybe:"
+		echo "   cosign download attestation $ref@$digest | jq '.payload|@base64d|fromjson'"
+
+		echo "Version:"
 		podman run --rm "$ref@$digest" version | sed 's/^/   /'
 
-		echo Binaries in /usr/local/bin:
+		echo "Files in /usr/local/bin:"
 		podman run --rm --entrypoint /bin/bash "$ref@$digest" -c 'ls -l /usr/local/bin' | sed 's/^/   /'
 
-		echo Command for poking around:
+		echo "Command for poking around:"
 		echo "   podman run --rm -it --entrypoint /bin/bash $ref"
 
 		echo ""
 
 	else
 		# Brief output
-		echo 🛠️ $title
+		echo "🛠️ $title"
 		echo "$ref@$digest"
 		[[ -n "$ver" ]] && echo "$konflux_image"
 		podman run --rm "$ref@$digest" version | sed 's/^/   /' | head -3
@@ -71,7 +75,7 @@ _show_details() {
 # Built and pushed by Konflux from a release branch
 # (This is shipped to customers with RHTAS)
 for t in ${RH_TAGS}; do
-  [[ $t == "latest" ]] && ver="v06" || ver="v${t/./}"
+	[[ $t == "latest" ]] && ver="v06" || ver="v${t/./}"
 	_show_details "Red Hat Build ($t)" "registry.redhat.io/rhtas/ec-rhel9:${t}" "$ver"
 done
 
