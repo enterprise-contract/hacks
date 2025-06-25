@@ -25,7 +25,7 @@ ec validate input --policy policy.yaml \
 ```
 
 The important part of the command above is that it wraps the attestation into the
-[policy input](https://enterprisecontract.dev/docs/ec-cli/main/policy_input.html) format used by the
+[policy input](https://conforma.dev/docs/cli/policy_input.html) format used by the
 `ec validate image` command. This allows `release` policy rules to be used with the `validate input`
 command.
 
