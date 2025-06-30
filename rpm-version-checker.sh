@@ -33,6 +33,8 @@ for ref in ${IMAGES_TO_CHECK[@]}; do
     podman pull -q "$ref" > /dev/null
   fi
 
+  printf "Created: $(skopeo inspect --no-tags "docker://$ref" | jq -r .Created)\n"
+
   # The args should be a list of rpm versions that have the particular vulernability
   # fix you're interested in. You can find the rpm nvr in the advisory under Builds
   for want in "$@"; do
