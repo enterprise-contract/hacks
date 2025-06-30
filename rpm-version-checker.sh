@@ -14,9 +14,10 @@ set -o pipefail
 #
 
 IMAGES_TO_CHECK=(
-  registry.redhat.io/rhtas/ec-rhel9:0.5
-  registry.redhat.io/rhtas/ec-rhel9:0.6
   quay.io/conforma/cli:latest
+  registry.redhat.io/rhtas/ec-rhel9:0.6
+  registry.redhat.io/rhtas/ec-rhel9:0.5
+  registry.access.redhat.com/ubi9/ubi-minimal:latest
 )
 
 RED="\e[31m✘\e[0m"
@@ -24,7 +25,7 @@ GREEN="\e[32m✔\e[0m"
 YELLOW="\e[33m✔\e[0m"
 
 for ref in ${IMAGES_TO_CHECK[@]}; do
-  printf "# $ref\n"
+  printf "🛠️ $ref\n"
 
   # Set FAST=1 if you're hacking on the script because the podman
   # pull takes a while and there's no point doing it over and over
